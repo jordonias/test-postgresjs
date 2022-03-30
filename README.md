@@ -27,6 +27,7 @@ After testing you should destroy the stack to avoid any charges to AWS
 ```
 npm run destroy
 ```
+Also note there may be some artifacts in S3 that you may need to delete manually
 
 Message me, post in the issue, or email jordan@jordonias.com with any questions
 
