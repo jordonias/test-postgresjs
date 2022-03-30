@@ -39,11 +39,13 @@ const createTestFunction = (usePostgresJS: boolean, useIAM: boolean) => {
 
     if(usePostgresJS) {
       const sql = postgres(options);
-      await sql`SELECT 1`; // Hangs here when useIAM=true
+      const result = await sql`SELECT 1`; // Hangs here when useIAM=true
+      return result;
     } else {
       const client = new Client(options);
       await client.connect();
-      client.query('SELECT 1');
+      const result = await client.query('SELECT 1');
+      return result.rows;
     }
   };
 }
