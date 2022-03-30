@@ -9,6 +9,7 @@ export default {
   external: [ ...builtins, 'aws-sdk', 'pg-native' ],
   input: 'testFunction.ts',
   plugins: [
+    // This is a hack because bundling pg-native with rollup doesn't work correctly
     replace({ 'pg-native': 'fs' }),
     nodeResolve({ preferBuiltins: false }),
     commonjs(),

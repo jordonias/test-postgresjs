@@ -38,7 +38,7 @@ interface Props {
  */
 
 export class Database extends Construct {
-  public endpoint: string;
+  public proxy: DatabaseProxy;
   public credentials: Credentials;
 
   public constructor(scope: Construct, id: string, props: Props) {
@@ -82,6 +82,8 @@ export class Database extends Construct {
     const proxy = new DatabaseProxy(this, 'TestProxy', {
       proxyTarget: ProxyTarget.fromInstance(instance),
       secrets: [ instance.secret ],
+      // You can uncomment this to test without iam auth, but it is probably more easy to make this change in the AWS console
+      // https://us-east-1.console.aws.amazon.com/rds/home?region=us-east-1#modify-proxy:id=testproxy
       iamAuth: true,
       vpc: props.vpc,
       securityGroups: [
@@ -89,6 +91,6 @@ export class Database extends Construct {
       ],
     });
 
-    this.endpoint = proxy.endpoint;
+    this.proxy = proxy;
   }
 }

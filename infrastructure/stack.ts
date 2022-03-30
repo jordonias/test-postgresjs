@@ -27,7 +27,7 @@ export class InfrastructureStack extends Stack {
     });
 
     const createTestFunction = (functionName: string) => {
-      return new LambdaFunction(this, `${functionName}Function`, {
+      const func = new LambdaFunction(this, `${functionName}Function`, {
         code: Code.fromAsset(path.join(__dirname, '../dist')),
         functionName: functionName,
         handler: `testFunction.${functionName}`,
@@ -35,11 +35,14 @@ export class InfrastructureStack extends Stack {
         runtime: Runtime.NODEJS_14_X,
         vpc,
         environment: {
-          DATABASE_HOST: database.endpoint,
+          DATABASE_HOST: database.proxy.endpoint,
           DATABASE_USER: database.credentials.username.toString(),
           DATABASE_PASSWORD: database.credentials.password.toString(),
         },
       });
+
+      database.proxy.grantConnect(func);
+      return func;
     };
 
     createTestFunction('testWithPostgresJS');
