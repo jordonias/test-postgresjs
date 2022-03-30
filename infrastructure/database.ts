@@ -71,6 +71,7 @@ export class Database extends Construct {
       allocatedStorage: 20,
       storageType: StorageType.GP2,
       deletionProtection: false,
+      databaseName: 'test',
       port: 5432,
       credentials: this.credentials,
       securityGroups: [
