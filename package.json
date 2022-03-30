@@ -1,0 +1,33 @@
+{
+  "name": "postgresjs-test",
+  "version": "0.0.0",
+  "description": "Test issue with postgres.js",
+  "main": "dist/index.js",
+  "scripts": {
+    "bootstrap": "cdk bootstrap aws://$ACCOUNT_ID/us-east-1",
+    "build:function": "rollup -c rollup.config.js",
+    "build:stack": "tsc",
+    "build": "npm run build:function",
+    "deploy": "cdk deploy TestStack",
+    "destroy": "cdk destroy TestStack"
+  },
+  "author": "Jordan Larson <jordan@jordonias.com>",
+  "license": "GPL",
+  "dependencies": {
+    "@rollup/plugin-commonjs": "^21.0.3",
+    "@rollup/plugin-json": "^4.1.0",
+    "@rollup/plugin-node-resolve": "^13.1.3",
+    "@rollup/plugin-typescript": "^8.3.1",
+    "@types/node": "^17.0.23",
+    "aws-cdk": "^2.18.0",
+    "aws-cdk-lib": "^2.18.0",
+    "aws-sdk": "^2.1104.0",
+    "constructs": "^10.0.100",
+    "pg": "^8.7.3",
+    "postgres": "^3.0.0",
+    "rollup": "^2.70.1",
+    "rollup-plugin-replace": "^2.2.0",
+    "tslib": "^2.3.1",
+    "typescript": "^4.6.3"
+  }
+}
