@@ -67,6 +67,7 @@ export class Database extends Construct {
         InstanceClass.T3,
         InstanceSize.MICRO,
       ),
+      iamAuthentication: true,
       vpc: props.vpc,
       allocatedStorage: 20,
       storageType: StorageType.GP2,
