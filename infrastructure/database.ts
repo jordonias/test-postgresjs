@@ -40,6 +40,7 @@ interface Props {
 export class Database extends Construct {
   public proxy: DatabaseProxy;
   public credentials: Credentials;
+  public securityGroup: SecurityGroup;
 
   public constructor(scope: Construct, id: string, props: Props) {
     super(scope, id);
@@ -49,15 +50,16 @@ export class Database extends Construct {
     });
     this.credentials = Credentials.fromSecret(secret, 'test');
 
+    this.securityGroup = new SecurityGroup(this, 'TestDBSecurityGroup', {
+      vpc: props.vpc,
+    });
+
     new InterfaceVpcEndpoint(this, 'TestSecretsManagerEndpoint', {
       vpc: props.vpc,
       service: InterfaceVpcEndpointAwsService.SECRETS_MANAGER,
     });
 
-    const securityGroup = new SecurityGroup(this, 'TestDBSecurityGroup', {
-      vpc: props.vpc,
-    });
-    securityGroup.addIngressRule(Peer.anyIpv4(), Port.tcp(5432));
+    this.securityGroup.addIngressRule(Peer.anyIpv4(), Port.tcp(5432));
 
     const instance = new DatabaseInstance(this, 'TestDBInstance', {
       engine: DatabaseInstanceEngine.postgres({
@@ -76,7 +78,7 @@ export class Database extends Construct {
       port: 5432,
       credentials: this.credentials,
       securityGroups: [
-        securityGroup,
+        this.securityGroup,
       ]
     });
 
@@ -88,7 +90,7 @@ export class Database extends Construct {
       iamAuth: true,
       vpc: props.vpc,
       securityGroups: [
-        securityGroup,
+        this.securityGroup,
       ],
     });
 

@@ -4,7 +4,7 @@
 
 import { Construct } from 'constructs';
 import { Environment, Stack } from 'aws-cdk-lib';
-import { Vpc } from 'aws-cdk-lib/aws-ec2';
+import { BastionHostLinux, InstanceClass, InstanceType, InstanceSize, Port, SecurityGroup, Vpc } from 'aws-cdk-lib/aws-ec2';
 import { Code, Function as LambdaFunction, Runtime } from 'aws-cdk-lib/aws-lambda';
 import path from 'path';
 
@@ -44,6 +44,26 @@ export class InfrastructureStack extends Stack {
       database.proxy.grantConnect(func);
       return func;
     };
+
+    const securityGroup = new SecurityGroup(this, 'TestEC2SecurityGroup', {
+      vpc: vpc,
+    });
+
+    const bastion = new BastionHostLinux(this, 'TestBastion', {
+      vpc,
+      securityGroup,
+      subnetSelection: {
+        subnetGroupName: 'Public',
+      },
+      instanceType: InstanceType.of(
+        InstanceClass.T3,
+        InstanceSize.MICRO,
+      ),
+    });
+    bastion.connections.allowFromAnyIpv4(Port.tcp(22));
+    bastion.connections.allowFromAnyIpv4(Port.tcp(1111));
+
+    database.securityGroup.addIngressRule(securityGroup, Port.tcp(5432), 'Allow access from EC2', true);
 
     createTestFunction('testWithPostgresJS');
     createTestFunction('testWithPG');
